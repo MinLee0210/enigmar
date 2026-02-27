@@ -1,0 +1,20 @@
+[package]
+name = "enigmar"
+version = "0.1.0"
+edition = "2021"
+description = "High-performance Enigma Machine simulator (M3/M4) with Python bindings"
+license = "MIT"
+
+[lib]
+name = "enigmar"
+crate-type = ["cdylib", "lib"]
+
+[dependencies]
+pyo3 = { version = "0.23" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[features]
+default = []
+extension-module = ["pyo3/extension-module"]
+

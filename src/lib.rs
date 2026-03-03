@@ -45,14 +45,14 @@ use serde::{Deserialize, Serialize};
 /// Wiring: A→wiring[0], B→wiring[1], ..., Z→wiring[25].
 fn rotor_spec(name: &str) -> Option<(&'static str, &'static [u8])> {
     match name {
-        "I" => Some(("EKMFLGDQVZNTOWYHXUSPAIBRCJ", &[b'Q'])),
-        "II" => Some(("AJDKSIRUXBLHWTMCQGZNPYFVOE", &[b'E'])),
-        "III" => Some(("BDFHJLCPRTXVZNYEIWGAKMUSQO", &[b'V'])),
-        "IV" => Some(("ESOVPZJAYQUIRHXLNFTGKDCMWB", &[b'J'])),
-        "V" => Some(("VZBRGITYUPSDNHLXAWMJQOFECK", &[b'Z'])),
-        "VI" => Some(("JPGVOUMFYQBENHZRDKASXLICTW", &[b'Z', b'M'])),
-        "VII" => Some(("NZJHGRCXMYSWBOUFAIVLPEKQDT", &[b'Z', b'M'])),
-        "VIII" => Some(("FKQHTLXOCBJSPDZRAMEWNIUYGV", &[b'Z', b'M'])),
+        "I" => Some(("EKMFLGDQVZNTOWYHXUSPAIBRCJ", b"Q")),
+        "II" => Some(("AJDKSIRUXBLHWTMCQGZNPYFVOE", b"E")),
+        "III" => Some(("BDFHJLCPRTXVZNYEIWGAKMUSQO", b"V")),
+        "IV" => Some(("ESOVPZJAYQUIRHXLNFTGKDCMWB", b"J")),
+        "V" => Some(("VZBRGITYUPSDNHLXAWMJQOFECK", b"Z")),
+        "VI" => Some(("JPGVOUMFYQBENHZRDKASXLICTW", b"ZM")),
+        "VII" => Some(("NZJHGRCXMYSWBOUFAIVLPEKQDT", b"ZM")),
+        "VIII" => Some(("FKQHTLXOCBJSPDZRAMEWNIUYGV", b"ZM")),
         _ => None,
     }
 }
@@ -119,7 +119,7 @@ impl Plugboard {
     #[new]
     #[pyo3(signature = (pairs=""))]
     pub fn new(pairs: &str) -> PyResult<Self> {
-        Self::from_pairs(pairs).map_err(|e| pyo3::exceptions::PyValueError::new_err(e))
+        Self::from_pairs(pairs).map_err(pyo3::exceptions::PyValueError::new_err)
     }
 }
 
@@ -218,8 +218,7 @@ impl Rotor {
     /// - `ring`: Ring setting / Ringstellung (0–25).
     #[new]
     pub fn new(rotor_type: &str, position: u8, ring: u8) -> PyResult<Self> {
-        Self::from_spec(rotor_type, position, ring)
-            .map_err(|e| pyo3::exceptions::PyValueError::new_err(e))
+        Self::from_spec(rotor_type, position, ring).map_err(pyo3::exceptions::PyValueError::new_err)
     }
 }
 
@@ -311,7 +310,7 @@ impl Reflector {
     /// - `reflector_type`: One of `"B"`, `"C"`, `"B-thin"`, `"C-thin"`.
     #[new]
     pub fn new(reflector_type: &str) -> PyResult<Self> {
-        Self::from_spec(reflector_type).map_err(|e| pyo3::exceptions::PyValueError::new_err(e))
+        Self::from_spec(reflector_type).map_err(pyo3::exceptions::PyValueError::new_err)
     }
 }
 
@@ -575,7 +574,7 @@ impl EnigmaBuilder {
     #[pyo3(name = "rotor", signature = (rotor_type, position=0, ring=0))]
     pub fn py_rotor(&mut self, rotor_type: &str, position: u8, ring: u8) -> PyResult<()> {
         let r = Rotor::from_spec(rotor_type, position, ring)
-            .map_err(|e| pyo3::exceptions::PyValueError::new_err(e))?;
+            .map_err(pyo3::exceptions::PyValueError::new_err)?;
         self.rotors.push(r);
         Ok(())
     }
@@ -586,7 +585,7 @@ impl EnigmaBuilder {
     #[pyo3(name = "reflector")]
     pub fn py_reflector(&mut self, reflector_type: &str) -> PyResult<()> {
         let r = Reflector::from_spec(reflector_type)
-            .map_err(|e| pyo3::exceptions::PyValueError::new_err(e))?;
+            .map_err(pyo3::exceptions::PyValueError::new_err)?;
         self.reflector = Some(r);
         Ok(())
     }
@@ -596,8 +595,7 @@ impl EnigmaBuilder {
     /// - `pairs`: Space-separated letter pairs, e.g. `"AB CD EF"`
     #[pyo3(name = "plugboard", signature = (pairs=""))]
     pub fn py_plugboard(&mut self, pairs: &str) -> PyResult<()> {
-        let pb =
-            Plugboard::from_pairs(pairs).map_err(|e| pyo3::exceptions::PyValueError::new_err(e))?;
+        let pb = Plugboard::from_pairs(pairs).map_err(pyo3::exceptions::PyValueError::new_err)?;
         self.plugboard = Some(pb);
         Ok(())
     }
@@ -607,7 +605,7 @@ impl EnigmaBuilder {
     pub fn py_build(&self) -> PyResult<EnigmaMachine> {
         self.clone()
             .build()
-            .map_err(|e| pyo3::exceptions::PyValueError::new_err(e))
+            .map_err(pyo3::exceptions::PyValueError::new_err)
     }
 }
 

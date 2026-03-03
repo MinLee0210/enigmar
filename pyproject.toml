@@ -35,5 +35,4 @@ Issues = "https://github.com/MinLee0210/enigmar/issues"
 
 [tool.maturin]
 features = ["pyo3/extension-module"]
-python-source = "."
 module-name = "enigmar"

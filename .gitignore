@@ -1,1 +1,7 @@
 /target
+dist/
+__pycache__/
+*.so
+*.pyd
+*.egg-info/
+.venv/

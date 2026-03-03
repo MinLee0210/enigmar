@@ -4,6 +4,13 @@ version = "0.1.0"
 edition = "2021"
 description = "High-performance Enigma Machine simulator (M3/M4) with Python bindings"
 license = "MIT"
+authors = ["MinLee0210"]
+repository = "https://github.com/MinLee0210/enigmar"
+homepage = "https://github.com/MinLee0210/enigmar"
+readme = "README.md"
+keywords = ["enigma", "cipher", "cryptography", "simulator"]
+categories = ["cryptography", "simulation"]
+rust-version = "1.63"
 
 [lib]
 name = "enigmar"

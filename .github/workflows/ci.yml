@@ -51,11 +51,13 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install maturin
-        run: pip install maturin
+      - name: Create virtualenv and install maturin
+        run: |
+          python -m venv .venv
+          .venv/bin/pip install maturin
 
       - name: Build and install package
-        run: maturin develop --features extension-module
+        run: .venv/bin/maturin develop --features extension-module
 
       - name: Run Python example
-        run: python example.py
+        run: .venv/bin/python example.py
